@@ -1,6 +1,6 @@
 from time import sleep
 
-def visualize(state, prev_state):
+def visualize(state, prev_state, sleep_len=0.3, highlight=[]):
    '''Pretty prints the state of RC4. Green indicates values
    that have not changed, red indicates values that have
    changed.'''
@@ -12,13 +12,19 @@ def visualize(state, prev_state):
    for i in range(length):
       if i % 16 == 0:
          output += '\n'
-      if state[i] == prev_state[i]:
+      if i in highlight:
+         output += '[' + purpletext(ord(state[i])) + ']'
+      elif state[i] == prev_state[i]:
          output += '[' + greentext(ord(state[i])) + ']'
       else:
          output += '[' + redtext(ord(state[i])) + ']'
 
    print output
-   sleep(1)
+   sleep(sleep_len)
+
+
+def purpletext(byte):
+   return '\033[1;35m{0:02x}\033[1;m'.format(byte)
 
 
 def greentext(byte):
@@ -69,9 +75,17 @@ def prga(key, length, viz=False):
    for junk_var in range(length):
       i = (i + 1) % 256
       j = (j + ord(state[i])) % 256
+      if viz:
+         prev_state = state[:]
       t = state[i]
       state[i] = state[j]
       state[j] = t
+      if viz:
+         print
+         print 'i++ (mod 256)'
+         print 'j += Si (mod 256)'
+         print 'swap Si and Sj'
+         visualize(state, prev_state, highlight=[(ord(state[i])+ord(state[j])) % 256])
       output += state[(ord(state[i]) + ord(state[j])) % 256]
 
    return output
