@@ -1,4 +1,4 @@
-# Crypto in Pictures
+# CryptoGraphics
 Experiments in visualizing cryptography
 
 
